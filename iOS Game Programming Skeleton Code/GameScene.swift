@@ -58,22 +58,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             moving.addChild(sprite)
         }
         
-        // skyline
-        let skyTexture = SKTexture(imageNamed: "sky")
-        skyTexture.filteringMode = .Nearest
-        
-        let moveSkySprite = SKAction.moveByX(-skyTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.1 * skyTexture.size().width * 2.0))
-        let resetSkySprite = SKAction.moveByX(skyTexture.size().width * 2.0, y: 0, duration: 0.0)
-        let moveSkySpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveSkySprite,resetSkySprite]))
-        
-        for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( skyTexture.size().width * 2.0 ); ++i {
-            let sprite = SKSpriteNode(texture: skyTexture)
-            sprite.setScale(2.0)
-            sprite.zPosition = -20
-            sprite.position = CGPoint(x: i * sprite.size.width, y: sprite.size.height / 2.0 + groundTexture.size().height * 2.0)
-            sprite.runAction(moveSkySpritesForever)
-            moving.addChild(sprite)
-        }
+//        // skyline
+        createSkyline(groundTexture)
+
         
         // create the pipes textures
         pipeTextureUp = SKTexture(imageNamed: "PipeUp")
@@ -129,8 +116,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         // Initialize label and create a label which holds the score
         //setUpScore()
-        
-        print("SHIT")
     }
     
     //Additional functions
@@ -142,6 +127,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func setupBackgroundColor() {
         skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         self.backgroundColor = skyColor
+    }
+    
+    func createSkyline(groundTexture: SKTexture) {
+                let skyTexture = SKTexture(imageNamed: "sky")
+                skyTexture.filteringMode = .Nearest
+        
+                let moveSkySprite = SKAction.moveByX(-skyTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.1 * skyTexture.size().width * 2.0))
+                let resetSkySprite = SKAction.moveByX(skyTexture.size().width * 2.0, y: 0, duration: 0.0)
+                let moveSkySpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveSkySprite,resetSkySprite]))
+        
+                for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( skyTexture.size().width * 2.0 ); ++i {
+                    let sprite = SKSpriteNode(texture: skyTexture)
+                    sprite.setScale(2.0)
+                    sprite.zPosition = -20
+                    sprite.position = CGPoint(x: i * sprite.size.width, y: sprite.size.height / 2.0 + groundTexture.size().height * 2.0)
+                    sprite.runAction(moveSkySpritesForever)
+                    moving.addChild(sprite)
+                }
     }
     
     func setUpScore() {
