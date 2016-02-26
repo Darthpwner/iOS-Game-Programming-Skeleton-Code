@@ -60,8 +60,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         //8
         setupBackgroundColor()
         
-        // Initialize label and create a label which holds the score
-        //setUpScore()
+        //10
+        setUpScore()
     }
     
     //Additional functions
@@ -182,9 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         scoreLabelNode.zPosition = 100
         scoreLabelNode.text = String(score)
         self.addChild(scoreLabelNode)
-        
     }
-    //
     
     func spawnPipes() {
                 let pipePair = SKNode()
@@ -227,26 +225,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
     }
     
+    //11
     func resetScene (){
-        //        // Move bird to original position and reset velocity
-        //        bird.position = CGPoint(x: self.frame.size.width / 2.5, y: self.frame.midY)
-        //        bird.physicsBody?.velocity = CGVector( dx: 0, dy: 0 )
-        //        bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
-        //        bird.speed = 1.0
-        //        bird.zRotation = 0.0
-        //
-        //        // Remove all existing pipes
-        //        pipes.removeAllChildren()
-        //
-        //        // Reset _canRestart
-        //        canRestart = false
-        //
-        //        // Reset score
-        //        score = 0
-        //        scoreLabelNode.text = String(score)
-        //
-        //        // Restart animation
-        //        moving.speed = 1
+                // Move bird to original position and reset velocity
+                bird.position = CGPoint(x: self.frame.size.width / 2.5, y: self.frame.midY)
+                bird.physicsBody?.velocity = CGVector( dx: 0, dy: 0 )
+                bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
+                bird.speed = 1.0
+                bird.zRotation = 0.0
+        
+                // Remove all existing pipes
+                pipes.removeAllChildren()
+        
+                // Reset _canRestart
+                canRestart = false
+        
+                // Reset score
+                score = 0
+                scoreLabelNode.text = String(score)
+        
+                // Restart animation
+                moving.speed = 1
     }
     
     //3
