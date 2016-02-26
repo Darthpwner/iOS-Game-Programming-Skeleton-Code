@@ -34,34 +34,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         canRestart = false
         
         //1
-//        setupBird()
+        setupBird()
         
         //2
         /*These two functions go together*/
-  //      setupPhysics()
+        setupPhysics()
         
-    //    setupBirdPhysics()
+        setupBirdPhysics()
         
         //4
-      //  setupTaps()
+        setupTaps()
+        
+        //5
+        createGround()
         
         //6
-        //createGround()
-        
+        createGroundInteraction(groundTexture)
+
         //7
-//        createGroundInteraction(groundTexture)
-
-        //8
-  //      createSkyline(groundTexture)
+        createSkyline(groundTexture)
         
-        //9
-    //    createPipes()
+        //8
+        createPipes()
 
-        //10
-      //  setupBackgroundColor()
+        //9
+        setupBackgroundColor()
         
         //11
-        //setUpScore()
+        setUpScore()
     }
     
     //Additional functions
@@ -112,35 +112,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
-        //        bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
+         //Called before each frame is rendered
+                bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
     }
     
     //4
     func setupTaps() {
-//        moving = SKNode()
-//        self.addChild(moving)
-//        pipes = SKNode()
-//        moving.addChild(pipes)
+        moving = SKNode()
+        self.addChild(moving)
+        pipes = SKNode()
+        moving.addChild(pipes)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        /* Called when a touch begins */
+                        if moving.speed > 0  {
+                            for touch: AnyObject in touches {
+                                let location = touch.locationInNode(self)
+        
+                                bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                                bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
+        
+                            }
+                        } else if canRestart {
+                            self.resetScene()
+                        }
     }
     
     //5
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        /* Called when a touch begins */
-        //                if moving.speed > 0  {
-        //                    for touch: AnyObject in touches {
-        //                        let location = touch.locationInNode(self)
-        //
-        //                        bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        //                        bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
-        //
-        //                    }
-        //                } else if canRestart {
-        //                    self.resetScene()
-        //                }
-    }
-    
-    //6
     func createGround() {
         groundTexture.filteringMode = .Nearest // shorter form for SKTextureFilteringMode.Nearest
         
@@ -157,7 +156,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
     }
     
-    //7
+    //6
     func createGroundInteraction(groundTexture: SKTexture) {
         var ground = SKNode()
         ground.position = CGPoint(x: 0, y: groundTexture.size().height)
@@ -165,10 +164,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         ground.physicsBody?.dynamic = false
         ground.physicsBody?.categoryBitMask = worldCategory
         self.addChild(ground)
-
     }
     
-    //8
+    //7
     func createSkyline(groundTexture: SKTexture) {
                 let skyTexture = SKTexture(imageNamed: "sky")
                 skyTexture.filteringMode = .Nearest
@@ -187,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 }
     }
     
-    //9
+    //8
     func createPipes() {
         // create the pipes textures
         pipeTextureUp = SKTexture(imageNamed: "PipeUp")
@@ -210,10 +208,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         movePipesAndRemove = SKAction.sequence([movePipes, removePipes])
     }
     
-    //10
+    //9
     func setupBackgroundColor() {
         skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         self.backgroundColor = skyColor
+    }
+    
+    //10
+    func didBeginContact(contact: SKPhysicsContact) {
+        if moving.speed > 0 {
+            if ( contact.bodyA.categoryBitMask & scoreCategory ) == scoreCategory || ( contact.bodyB.categoryBitMask & scoreCategory ) == scoreCategory {
+                // Bird has contact with score entity
+                score++
+                scoreLabelNode.text = String(score)
+                
+                // Add a little visual feedback for the score increment
+                scoreLabelNode.runAction(SKAction.sequence([SKAction.scaleTo(1.5, duration:NSTimeInterval(0.1)), SKAction.scaleTo(1.0, duration:NSTimeInterval(0.1))]))
+            } else {
+                
+                moving.speed = 0
+                
+                bird.physicsBody?.collisionBitMask = worldCategory
+                bird.runAction(  SKAction.rotateByAngle(CGFloat(M_PI) * CGFloat(bird.position.y) * 0.01, duration:1), completion:{self.bird.speed = 0 })
+                
+                
+                // Flash background if contact is detected
+                self.removeActionForKey("flash")
+                self.runAction(SKAction.sequence([SKAction.repeatAction(SKAction.sequence([SKAction.runBlock({
+                    self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
+                }),SKAction.waitForDuration(NSTimeInterval(0.05)), SKAction.runBlock({
+                    self.backgroundColor = self.skyColor
+                }), SKAction.waitForDuration(NSTimeInterval(0.05))]), count:4), SKAction.runBlock({
+                    self.canRestart = true
+                })]), withKey: "flash")
+            }
+        }
     }
     
     //11
@@ -224,6 +253,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         scoreLabelNode.zPosition = 100
         scoreLabelNode.text = String(score)
         self.addChild(scoreLabelNode)
+    }
+    
+    //12
+    func resetScene (){
+        // Move bird to original position and reset velocity
+        bird.position = CGPoint(x: self.frame.size.width / 2.5, y: self.frame.midY)
+        bird.physicsBody?.velocity = CGVector( dx: 0, dy: 0 )
+        bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
+        bird.speed = 1.0
+        bird.zRotation = 0.0
+        
+        // Remove all existing pipes
+        pipes.removeAllChildren()
+        
+        // Reset _canRestart
+        canRestart = false
+        
+        // Reset score
+        score = 0
+        scoreLabelNode.text = String(score)
+        
+        // Restart animation
+        moving.speed = 1
     }
     //End of Additional Functions
     
@@ -266,63 +318,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 pipePair.runAction(movePipesAndRemove)
                 pipes.addChild(pipePair)
         
-    }
-    
-    //LAST
-    func resetScene (){
-                // Move bird to original position and reset velocity
-//                bird.position = CGPoint(x: self.frame.size.width / 2.5, y: self.frame.midY)
-//                bird.physicsBody?.velocity = CGVector( dx: 0, dy: 0 )
-//                bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
-//                bird.speed = 1.0
-//                bird.zRotation = 0.0
-//        
-//                // Remove all existing pipes
-//                pipes.removeAllChildren()
-//        
-//                // Reset _canRestart
-//                canRestart = false
-//        
-//                // Reset score
-//                score = 0
-//                scoreLabelNode.text = String(score)
-//        
-//                // Restart animation
-//                moving.speed = 1
-    }
-    
-
-    
-
-    
-    //10
-    func didBeginContact(contact: SKPhysicsContact) {
-//                if moving.speed > 0 {
-//                    if ( contact.bodyA.categoryBitMask & scoreCategory ) == scoreCategory || ( contact.bodyB.categoryBitMask & scoreCategory ) == scoreCategory {
-//                        // Bird has contact with score entity
-//                        score++
-//                        scoreLabelNode.text = String(score)
-//        
-//                        // Add a little visual feedback for the score increment
-//                        scoreLabelNode.runAction(SKAction.sequence([SKAction.scaleTo(1.5, duration:NSTimeInterval(0.1)), SKAction.scaleTo(1.0, duration:NSTimeInterval(0.1))]))
-//                    } else {
-//        
-//                        moving.speed = 0
-//        
-//                        bird.physicsBody?.collisionBitMask = worldCategory
-//                        bird.runAction(  SKAction.rotateByAngle(CGFloat(M_PI) * CGFloat(bird.position.y) * 0.01, duration:1), completion:{self.bird.speed = 0 })
-//        
-//        
-//                        // Flash background if contact is detected
-//                        self.removeActionForKey("flash")
-//                        self.runAction(SKAction.sequence([SKAction.repeatAction(SKAction.sequence([SKAction.runBlock({
-//                            self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
-//                        }),SKAction.waitForDuration(NSTimeInterval(0.05)), SKAction.runBlock({
-//                            self.backgroundColor = self.skyColor
-//                        }), SKAction.waitForDuration(NSTimeInterval(0.05))]), count:4), SKAction.runBlock({
-//                            self.canRestart = true
-//                        })]), withKey: "flash")
-//                    }
-//                }
     }
 }
