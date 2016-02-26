@@ -33,30 +33,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         canRestart = false
         
-        //setup our bird
+        //1
         setupBird()
         
-        // setup physics
+        //2
         /*These two functions go together*/
-        //setupPhysics()
+        setupPhysics()
         
-        //setupBirdPhysics()
+        setupBirdPhysics()
         
-        // ground
+        //3
+        setupTaps()
+        
+        //4
         createGround()
         
-        // create the ground interaction
-        //createGroundInteraction(groundTexture)
+        //5
+        createGroundInteraction(groundTexture)
 
-        // skyline
-        //createSkyline(groundTexture)
+        //6
+        createSkyline(groundTexture)
+        
+        //7
+        createPipes()
 
         // setup background color
         //setupBackgroundColor()
-        
-        //create the pipes
-        createPipes()
-
         
         // Initialize label and create a label which holds the score
         //setUpScore()
@@ -95,17 +97,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         self.physicsWorld.contactDelegate = self
     }
     
-    func setupBackgroundColor() {
-        skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
-        self.backgroundColor = skyColor
-    }
-    
-    func createGround() {
+    func setupTaps() {
         moving = SKNode()
         self.addChild(moving)
         pipes = SKNode()
         moving.addChild(pipes)
-        
+    }
+    
+    func createGround() {
         groundTexture.filteringMode = .Nearest // shorter form for SKTextureFilteringMode.Nearest
         
         let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.02 * groundTexture.size().width * 2.0))
@@ -169,6 +168,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let movePipes = SKAction.moveByX(-distanceToMove, y:0.0, duration:NSTimeInterval(0.01 * distanceToMove))
         let removePipes = SKAction.removeFromParent()
         movePipesAndRemove = SKAction.sequence([movePipes, removePipes])
+    }
+    
+    func setupBackgroundColor() {
+        skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
+        self.backgroundColor = skyColor
     }
     
     func setUpScore() {
@@ -244,19 +248,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         //        // Restart animation
         //        moving.speed = 1
     }
+    
+    //3
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
-        //        if moving.speed > 0  {
-        //            for touch: AnyObject in touches {
-        //                let location = touch.locationInNode(self)
-        //
-        //                bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        //                bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
-        //
-        //            }
-        //        } else if canRestart {
-        //            self.resetScene()
-        //        }
+                if moving.speed > 0  {
+                    for touch: AnyObject in touches {
+                        let location = touch.locationInNode(self)
+        
+                        bird.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+                        bird.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 30))
+        
+                    }
+                } else if canRestart {
+                    self.resetScene()
+                }
     }
     
     // TODO: Move to utilities somewhere. There's no reason this should be a member function
@@ -276,34 +282,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 //        bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
     }
     
-    
+    //8
     func didBeginContact(contact: SKPhysicsContact) {
-        //        if moving.speed > 0 {
-        //            if ( contact.bodyA.categoryBitMask & scoreCategory ) == scoreCategory || ( contact.bodyB.categoryBitMask & scoreCategory ) == scoreCategory {
-        //                // Bird has contact with score entity
-        //                score++
-        //                scoreLabelNode.text = String(score)
-        //
-        //                // Add a little visual feedback for the score increment
-        //                scoreLabelNode.runAction(SKAction.sequence([SKAction.scaleTo(1.5, duration:NSTimeInterval(0.1)), SKAction.scaleTo(1.0, duration:NSTimeInterval(0.1))]))
-        //            } else {
-        //
-        //                moving.speed = 0
-        //
-        //                bird.physicsBody?.collisionBitMask = worldCategory
-        //                bird.runAction(  SKAction.rotateByAngle(CGFloat(M_PI) * CGFloat(bird.position.y) * 0.01, duration:1), completion:{self.bird.speed = 0 })
-        //
-        //
-        //                // Flash background if contact is detected
-        //                self.removeActionForKey("flash")
-        //                self.runAction(SKAction.sequence([SKAction.repeatAction(SKAction.sequence([SKAction.runBlock({
-        //                    self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
-        //                }),SKAction.waitForDuration(NSTimeInterval(0.05)), SKAction.runBlock({
-        //                    self.backgroundColor = self.skyColor
-        //                }), SKAction.waitForDuration(NSTimeInterval(0.05))]), count:4), SKAction.runBlock({
-        //                    self.canRestart = true
-        //                })]), withKey: "flash")
-        //            }
-        //        }
+                if moving.speed > 0 {
+                    if ( contact.bodyA.categoryBitMask & scoreCategory ) == scoreCategory || ( contact.bodyB.categoryBitMask & scoreCategory ) == scoreCategory {
+                        // Bird has contact with score entity
+                        score++
+                        scoreLabelNode.text = String(score)
+        
+                        // Add a little visual feedback for the score increment
+                        scoreLabelNode.runAction(SKAction.sequence([SKAction.scaleTo(1.5, duration:NSTimeInterval(0.1)), SKAction.scaleTo(1.0, duration:NSTimeInterval(0.1))]))
+                    } else {
+        
+                        moving.speed = 0
+        
+                        bird.physicsBody?.collisionBitMask = worldCategory
+                        bird.runAction(  SKAction.rotateByAngle(CGFloat(M_PI) * CGFloat(bird.position.y) * 0.01, duration:1), completion:{self.bird.speed = 0 })
+        
+        
+                        // Flash background if contact is detected
+                        self.removeActionForKey("flash")
+                        self.runAction(SKAction.sequence([SKAction.repeatAction(SKAction.sequence([SKAction.runBlock({
+                            self.backgroundColor = SKColor(red: 1, green: 0, blue: 0, alpha: 1.0)
+                        }),SKAction.waitForDuration(NSTimeInterval(0.05)), SKAction.runBlock({
+                            self.backgroundColor = self.skyColor
+                        }), SKAction.waitForDuration(NSTimeInterval(0.05))]), count:4), SKAction.runBlock({
+                            self.canRestart = true
+                        })]), withKey: "flash")
+                    }
+                }
     }
 }
