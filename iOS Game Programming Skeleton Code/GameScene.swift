@@ -79,18 +79,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let flap = SKAction.repeatActionForever(anim)
         
         bird = SKSpriteNode(texture: birdTexture1)
-        bird.setScale(2.0)
-        bird.position = CGPoint(x: self.frame.size.width * 0.35, y:self.frame.size.height * 0.6)
-        bird.runAction(flap)
-        
-        
-        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2.0)
-        bird.physicsBody?.dynamic = true
-        bird.physicsBody?.allowsRotation = false
-        
-        bird.physicsBody?.categoryBitMask = birdCategory
-        bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
-        bird.physicsBody?.contactTestBitMask = worldCategory | pipeCategory
+//        bird.setScale(2.0)
+//        bird.position = CGPoint(x: self.frame.size.width * 0.35, y:self.frame.size.height * 0.6)
+//        bird.runAction(flap)
+//        
+//        
+//        bird.physicsBody = SKPhysicsBody(circleOfRadius: bird.size.height / 2.0)
+//        bird.physicsBody?.dynamic = true
+//        bird.physicsBody?.allowsRotation = false
+//        
+//        bird.physicsBody?.categoryBitMask = birdCategory
+//        bird.physicsBody?.collisionBitMask = worldCategory | pipeCategory
+//        bird.physicsBody?.contactTestBitMask = worldCategory | pipeCategory
         
         self.addChild(bird)
         
@@ -169,44 +169,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     //
     
     func spawnPipes() {
-                let pipePair = SKNode()
-                pipePair.position = CGPoint( x: self.frame.size.width + pipeTextureUp.size().width * 2, y: 0 )
-                pipePair.zPosition = -10
-        
-                let height = UInt32( self.frame.size.height / 4)
-                let y = Double(arc4random_uniform(height) + height);
-        
-                let pipeDown = SKSpriteNode(texture: pipeTextureDown)
-                pipeDown.setScale(2.0)
-                pipeDown.position = CGPoint(x: 0.0, y: y + Double(pipeDown.size.height) + verticalPipeGap)
-        
-        
-                pipeDown.physicsBody = SKPhysicsBody(rectangleOfSize: pipeDown.size)
-                pipeDown.physicsBody?.dynamic = false
-                pipeDown.physicsBody?.categoryBitMask = pipeCategory
-                pipeDown.physicsBody?.contactTestBitMask = birdCategory
-                pipePair.addChild(pipeDown)
-        
-                let pipeUp = SKSpriteNode(texture: pipeTextureUp)
-                pipeUp.setScale(2.0)
-                pipeUp.position = CGPoint(x: 0.0, y: y)
-        
-                pipeUp.physicsBody = SKPhysicsBody(rectangleOfSize: pipeUp.size)
-                pipeUp.physicsBody?.dynamic = false
-                pipeUp.physicsBody?.categoryBitMask = pipeCategory
-                pipeUp.physicsBody?.contactTestBitMask = birdCategory
-                pipePair.addChild(pipeUp)
-        
-                var contactNode = SKNode()
-                contactNode.position = CGPoint( x: pipeDown.size.width + bird.size.width / 2, y: self.frame.midY )
-                contactNode.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize( width: pipeUp.size.width, height: self.frame.size.height ))
-                contactNode.physicsBody?.dynamic = false
-                contactNode.physicsBody?.categoryBitMask = scoreCategory
-                contactNode.physicsBody?.contactTestBitMask = birdCategory
-                pipePair.addChild(contactNode)
-        
-                pipePair.runAction(movePipesAndRemove)
-                pipes.addChild(pipePair)
+//                let pipePair = SKNode()
+//                pipePair.position = CGPoint( x: self.frame.size.width + pipeTextureUp.size().width * 2, y: 0 )
+//                pipePair.zPosition = -10
+//        
+//                let height = UInt32( self.frame.size.height / 4)
+//                let y = Double(arc4random_uniform(height) + height);
+//        
+//                let pipeDown = SKSpriteNode(texture: pipeTextureDown)
+//                pipeDown.setScale(2.0)
+//                pipeDown.position = CGPoint(x: 0.0, y: y + Double(pipeDown.size.height) + verticalPipeGap)
+//        
+//        
+//                pipeDown.physicsBody = SKPhysicsBody(rectangleOfSize: pipeDown.size)
+//                pipeDown.physicsBody?.dynamic = false
+//                pipeDown.physicsBody?.categoryBitMask = pipeCategory
+//                pipeDown.physicsBody?.contactTestBitMask = birdCategory
+//                pipePair.addChild(pipeDown)
+//        
+//                let pipeUp = SKSpriteNode(texture: pipeTextureUp)
+//                pipeUp.setScale(2.0)
+//                pipeUp.position = CGPoint(x: 0.0, y: y)
+//        
+//                pipeUp.physicsBody = SKPhysicsBody(rectangleOfSize: pipeUp.size)
+//                pipeUp.physicsBody?.dynamic = false
+//                pipeUp.physicsBody?.categoryBitMask = pipeCategory
+//                pipeUp.physicsBody?.contactTestBitMask = birdCategory
+//                pipePair.addChild(pipeUp)
+//        
+//                var contactNode = SKNode()
+//                contactNode.position = CGPoint( x: pipeDown.size.width + bird.size.width / 2, y: self.frame.midY )
+//                contactNode.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize( width: pipeUp.size.width, height: self.frame.size.height ))
+//                contactNode.physicsBody?.dynamic = false
+//                contactNode.physicsBody?.categoryBitMask = scoreCategory
+//                contactNode.physicsBody?.contactTestBitMask = birdCategory
+//                pipePair.addChild(contactNode)
+//        
+//                pipePair.runAction(movePipesAndRemove)
+//                pipes.addChild(pipePair)
         
     }
     
@@ -260,7 +260,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
-        bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
+//        bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
     }
     
     
