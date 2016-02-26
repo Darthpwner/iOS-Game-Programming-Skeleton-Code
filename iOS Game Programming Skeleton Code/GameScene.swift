@@ -36,6 +36,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         //setup our bird
         setupBird()
         
+        // setup physics
+        setupPhysics()
+        
         setupBirdPhysics()
         
         // ground
@@ -45,15 +48,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         createGroundInteraction(groundTexture)
 
         
-        // setup physics
-        //setupPhysics()
-        
-
         
         
-        
-//        // skyline
-//        createSkyline(groundTexture)
+        // skyline
+        //createSkyline(groundTexture)
 
         // setup background color
         //setupBackgroundColor()
