@@ -111,12 +111,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     //6
     func createGroundInteraction(groundTexture: SKTexture) {
-        var ground = SKNode()
-        ground.position = CGPoint(x: 0, y: groundTexture.size().height)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: self.frame.size.width, height: groundTexture.size().height * 2.0))
-        ground.physicsBody?.dynamic = false
-        ground.physicsBody?.categoryBitMask = worldCategory
-        self.addChild(ground)
+
     }
     
     //7
