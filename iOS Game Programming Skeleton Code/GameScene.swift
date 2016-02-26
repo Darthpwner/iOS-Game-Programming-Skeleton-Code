@@ -43,24 +43,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         moving.addChild(pipes)
         
         // ground
-        let groundTexture = SKTexture(imageNamed: "land")
-        groundTexture.filteringMode = .Nearest // shorter form for SKTextureFilteringMode.Nearest
-        
-        let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.02 * groundTexture.size().width * 2.0))
-        let resetGroundSprite = SKAction.moveByX(groundTexture.size().width * 2.0, y: 0, duration: 0.0)
-        let moveGroundSpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite,resetGroundSprite]))
-        
-        for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( groundTexture.size().width * 2.0 ); ++i {
-            let sprite = SKSpriteNode(texture: groundTexture)
-            sprite.setScale(2.0)
-            sprite.position = CGPoint(x: i * sprite.size.width, y: sprite.size.height / 2.0)
-            sprite.runAction(moveGroundSpritesForever)
-            moving.addChild(sprite)
-        }
+       // createGround()
         
 //        // skyline
-        createSkyline(groundTexture)
+//        createSkyline(groundTexture)
 
+        
         
         // create the pipes textures
         pipeTextureUp = SKTexture(imageNamed: "PipeUp")
@@ -106,13 +94,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         
         self.addChild(bird)
         
-        // create the ground
-        var ground = SKNode()
-        ground.position = CGPoint(x: 0, y: groundTexture.size().height)
-        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: self.frame.size.width, height: groundTexture.size().height * 2.0))
-        ground.physicsBody?.dynamic = false
-        ground.physicsBody?.categoryBitMask = worldCategory
-        self.addChild(ground)
+        // create the ground interaction
+        //createGroundInteraction(<#T##groundTexture: SKTexture##SKTexture#>)
         
         // Initialize label and create a label which holds the score
         //setUpScore()
@@ -127,6 +110,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func setupBackgroundColor() {
         skyColor = SKColor(red: 81.0/255.0, green: 192.0/255.0, blue: 201.0/255.0, alpha: 1.0)
         self.backgroundColor = skyColor
+    }
+    
+    func createGround() {
+        let groundTexture = SKTexture(imageNamed: "land")
+        groundTexture.filteringMode = .Nearest // shorter form for SKTextureFilteringMode.Nearest
+        
+        let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.02 * groundTexture.size().width * 2.0))
+        let resetGroundSprite = SKAction.moveByX(groundTexture.size().width * 2.0, y: 0, duration: 0.0)
+        let moveGroundSpritesForever = SKAction.repeatActionForever(SKAction.sequence([moveGroundSprite,resetGroundSprite]))
+        
+        for var i:CGFloat = 0; i < 2.0 + self.frame.size.width / ( groundTexture.size().width * 2.0 ); ++i {
+            let sprite = SKSpriteNode(texture: groundTexture)
+            sprite.setScale(2.0)
+            sprite.position = CGPoint(x: i * sprite.size.width, y: sprite.size.height / 2.0)
+            sprite.runAction(moveGroundSpritesForever)
+            moving.addChild(sprite)
+        }
+    }
+    
+    func createGroundInteraction(groundTexture: SKTexture) {
+        var ground = SKNode()
+        ground.position = CGPoint(x: 0, y: groundTexture.size().height)
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: self.frame.size.width, height: groundTexture.size().height * 2.0))
+        ground.physicsBody?.dynamic = false
+        ground.physicsBody?.categoryBitMask = worldCategory
+        self.addChild(ground)
+
     }
     
     func createSkyline(groundTexture: SKTexture) {
@@ -159,44 +169,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     //
     
     func spawnPipes() {
-        //        let pipePair = SKNode()
-        //        pipePair.position = CGPoint( x: self.frame.size.width + pipeTextureUp.size().width * 2, y: 0 )
-        //        pipePair.zPosition = -10
-        //
-        //        let height = UInt32( self.frame.size.height / 4)
-        //        let y = Double(arc4random_uniform(height) + height);
-        //
-        //        let pipeDown = SKSpriteNode(texture: pipeTextureDown)
-        //        pipeDown.setScale(2.0)
-        //        pipeDown.position = CGPoint(x: 0.0, y: y + Double(pipeDown.size.height) + verticalPipeGap)
-        //
-        //
-        //        pipeDown.physicsBody = SKPhysicsBody(rectangleOfSize: pipeDown.size)
-        //        pipeDown.physicsBody?.dynamic = false
-        //        pipeDown.physicsBody?.categoryBitMask = pipeCategory
-        //        pipeDown.physicsBody?.contactTestBitMask = birdCategory
-        //        pipePair.addChild(pipeDown)
-        //
-        //        let pipeUp = SKSpriteNode(texture: pipeTextureUp)
-        //        pipeUp.setScale(2.0)
-        //        pipeUp.position = CGPoint(x: 0.0, y: y)
-        //
-        //        pipeUp.physicsBody = SKPhysicsBody(rectangleOfSize: pipeUp.size)
-        //        pipeUp.physicsBody?.dynamic = false
-        //        pipeUp.physicsBody?.categoryBitMask = pipeCategory
-        //        pipeUp.physicsBody?.contactTestBitMask = birdCategory
-        //        pipePair.addChild(pipeUp)
-        //
-        //        var contactNode = SKNode()
-        //        contactNode.position = CGPoint( x: pipeDown.size.width + bird.size.width / 2, y: self.frame.midY )
-        //        contactNode.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize( width: pipeUp.size.width, height: self.frame.size.height ))
-        //        contactNode.physicsBody?.dynamic = false
-        //        contactNode.physicsBody?.categoryBitMask = scoreCategory
-        //        contactNode.physicsBody?.contactTestBitMask = birdCategory
-        //        pipePair.addChild(contactNode)
-        //
-        //        pipePair.runAction(movePipesAndRemove)
-        //        pipes.addChild(pipePair)
+                let pipePair = SKNode()
+                pipePair.position = CGPoint( x: self.frame.size.width + pipeTextureUp.size().width * 2, y: 0 )
+                pipePair.zPosition = -10
+        
+                let height = UInt32( self.frame.size.height / 4)
+                let y = Double(arc4random_uniform(height) + height);
+        
+                let pipeDown = SKSpriteNode(texture: pipeTextureDown)
+                pipeDown.setScale(2.0)
+                pipeDown.position = CGPoint(x: 0.0, y: y + Double(pipeDown.size.height) + verticalPipeGap)
+        
+        
+                pipeDown.physicsBody = SKPhysicsBody(rectangleOfSize: pipeDown.size)
+                pipeDown.physicsBody?.dynamic = false
+                pipeDown.physicsBody?.categoryBitMask = pipeCategory
+                pipeDown.physicsBody?.contactTestBitMask = birdCategory
+                pipePair.addChild(pipeDown)
+        
+                let pipeUp = SKSpriteNode(texture: pipeTextureUp)
+                pipeUp.setScale(2.0)
+                pipeUp.position = CGPoint(x: 0.0, y: y)
+        
+                pipeUp.physicsBody = SKPhysicsBody(rectangleOfSize: pipeUp.size)
+                pipeUp.physicsBody?.dynamic = false
+                pipeUp.physicsBody?.categoryBitMask = pipeCategory
+                pipeUp.physicsBody?.contactTestBitMask = birdCategory
+                pipePair.addChild(pipeUp)
+        
+                var contactNode = SKNode()
+                contactNode.position = CGPoint( x: pipeDown.size.width + bird.size.width / 2, y: self.frame.midY )
+                contactNode.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize( width: pipeUp.size.width, height: self.frame.size.height ))
+                contactNode.physicsBody?.dynamic = false
+                contactNode.physicsBody?.categoryBitMask = scoreCategory
+                contactNode.physicsBody?.contactTestBitMask = birdCategory
+                pipePair.addChild(contactNode)
+        
+                pipePair.runAction(movePipesAndRemove)
+                pipes.addChild(pipePair)
         
     }
     
