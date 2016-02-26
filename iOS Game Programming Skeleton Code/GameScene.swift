@@ -27,34 +27,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     let pipeCategory: UInt32 = 1 << 2
     let scoreCategory: UInt32 = 1 << 3
     
+    let groundTexture = SKTexture(imageNamed: "land")
+    
     override func didMoveToView(view: SKView) {
         
         canRestart = false
         
         //setup our bird
-//        setupBird()
-//        
-//        setupBirdPhysics()
+        setupBird()
         
+        setupBirdPhysics()
+        
+        // ground
+         createGround()
+        
+        // create the ground interaction
+        createGroundInteraction(groundTexture)
+
         
         // setup physics
         //setupPhysics()
         
-        // setup background color
-        //setupBackgroundColor()
+
         
-        moving = SKNode()
-        self.addChild(moving)
-        pipes = SKNode()
-        moving.addChild(pipes)
         
-        // ground
-       // createGround()
         
 //        // skyline
 //        createSkyline(groundTexture)
 
-        
+        // setup background color
+        //setupBackgroundColor()
         
         // create the pipes textures
         pipeTextureUp = SKTexture(imageNamed: "PipeUp")
@@ -75,12 +77,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
         self.runAction(spawnThenDelayForever)
         
-        
-        
-
-        
-        // create the ground interaction
-        //createGroundInteraction(<#T##groundTexture: SKTexture##SKTexture#>)
         
         // Initialize label and create a label which holds the score
         //setUpScore()
@@ -125,7 +121,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func createGround() {
-        let groundTexture = SKTexture(imageNamed: "land")
+        moving = SKNode()
+        self.addChild(moving)
+        pipes = SKNode()
+        moving.addChild(pipes)
+        
         groundTexture.filteringMode = .Nearest // shorter form for SKTextureFilteringMode.Nearest
         
         let moveGroundSprite = SKAction.moveByX(-groundTexture.size().width * 2.0, y: 0, duration: NSTimeInterval(0.02 * groundTexture.size().width * 2.0))
