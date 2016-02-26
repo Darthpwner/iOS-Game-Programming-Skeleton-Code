@@ -54,24 +54,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         // setup background color
         //setupBackgroundColor()
         
-        // create the pipes textures
-        pipeTextureUp = SKTexture(imageNamed: "PipeUp")
-        pipeTextureUp.filteringMode = .Nearest
-        pipeTextureDown = SKTexture(imageNamed: "PipeDown")
-        pipeTextureDown.filteringMode = .Nearest
-        
-        // create the pipes movement actions
-        let distanceToMove = CGFloat(self.frame.size.width + 2.0 * pipeTextureUp.size().width)
-        let movePipes = SKAction.moveByX(-distanceToMove, y:0.0, duration:NSTimeInterval(0.01 * distanceToMove))
-        let removePipes = SKAction.removeFromParent()
-        movePipesAndRemove = SKAction.sequence([movePipes, removePipes])
-        
-        // spawn the pipes
-        let spawn = SKAction.runBlock({() in self.spawnPipes()})
-        let delay = SKAction.waitForDuration(NSTimeInterval(2.0))
-        let spawnThenDelay = SKAction.sequence([spawn, delay])
-        let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
-        self.runAction(spawnThenDelayForever)
+        //create the pipes
+        createPipes()
 
         
         // Initialize label and create a label which holds the score
@@ -166,7 +150,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     }
     
     func createPipes() {
+        // create the pipes textures
+        pipeTextureUp = SKTexture(imageNamed: "PipeUp")
+        pipeTextureUp.filteringMode = .Nearest
+        pipeTextureDown = SKTexture(imageNamed: "PipeDown")
+        pipeTextureDown.filteringMode = .Nearest
         
+        // spawn the pipes
+        let spawn = SKAction.runBlock({() in self.spawnPipes()})
+        let delay = SKAction.waitForDuration(NSTimeInterval(2.0))
+        let spawnThenDelay = SKAction.sequence([spawn, delay])
+        let spawnThenDelayForever = SKAction.repeatActionForever(spawnThenDelay)
+        self.runAction(spawnThenDelayForever)
+        
+        
+        // create the pipes movement actions
+        let distanceToMove = CGFloat(self.frame.size.width + 2.0 * pipeTextureUp.size().width)
+        let movePipes = SKAction.moveByX(-distanceToMove, y:0.0, duration:NSTimeInterval(0.01 * distanceToMove))
+        let removePipes = SKAction.removeFromParent()
+        movePipesAndRemove = SKAction.sequence([movePipes, removePipes])
     }
     
     func setUpScore() {
