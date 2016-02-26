@@ -57,8 +57,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         //7
         createPipes()
 
-        // setup background color
-        //setupBackgroundColor()
+        //8
+        setupBackgroundColor()
         
         // Initialize label and create a label which holds the score
         //setUpScore()
@@ -282,7 +282,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
 //        bird.zRotation = self.clamp( -1, max: 0.5, value: bird.physicsBody!.velocity.dy * ( bird.physicsBody!.velocity.dy < 0 ? 0.003 : 0.001 ) )
     }
     
-    //8
+    //9
     func didBeginContact(contact: SKPhysicsContact) {
                 if moving.speed > 0 {
                     if ( contact.bodyA.categoryBitMask & scoreCategory ) == scoreCategory || ( contact.bodyB.categoryBitMask & scoreCategory ) == scoreCategory {
